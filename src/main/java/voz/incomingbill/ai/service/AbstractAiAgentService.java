@@ -3,37 +3,33 @@ package voz.incomingbill.ai.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.content.Media;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
-public class AiAgentService {
+public abstract class AbstractAiAgentService {
     public static final String HAVE_NOT_FILES_FOR_PROCESSING = "Have not files for processing";
     public static final String WE_HAVE_ANSWER = "We have answer[{}]";
     public static final String HAVEN_T_ACCESS = "Haven`t access";
     public static final String ERROR = "ERROR";
     public static final String ARE_YOU_HERE = "Ти тут?";
 
-    private final LoadMediaService loadMediaService;
     private final ChatClient chatClient;
-    private final String promptSystemRole;
-    private final String promptUserRole;
+    @Autowired
+    @Value("${app.prompts.system-role}")
+    private String promptSystemRole;
+    @Autowired
+    @Value("${app.prompts.system-role}")
+    private String promptUserRole;
 
-    public AiAgentService(ChatClient.Builder builder
-            , LoadMediaService loadMediaService
-            , @Value("${app.prompts.system-role}") String promptSystemRole
-            , @Value("${app.prompts.user-role}") String promptUserRole) {
-        this.loadMediaService = loadMediaService;
+    public AbstractAiAgentService(ChatClient.Builder builder){
         this.chatClient = builder.build();
-        this.promptSystemRole = promptSystemRole;
-        this.promptUserRole = promptUserRole;
     }
 
-    public String processAllImages() {
-        List<Media> medias = loadMediaService.loadFiles();
+    public String process() {
+        List<Media> medias = getMediaLoader().loadFiles();
 
         if (medias.isEmpty()) {
             return HAVE_NOT_FILES_FOR_PROCESSING;
@@ -61,4 +57,6 @@ public class AiAgentService {
         }
         return content;
     }
+
+    protected abstract AbstractLoadMediaService getMediaLoader();
 }
