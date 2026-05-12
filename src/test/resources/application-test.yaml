@@ -1,0 +1,12 @@
+spring:
+  ai:
+    google:
+      genai:
+        api-key: test-api-key
+
+app:
+  file-path: ./test-scans
+  file-path-output: ./test-output
+  prompts:
+    system-role: "Test system role"
+    user-role: "Test user role"
