@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import voz.incomingbill.ai.service.agent.JpegAiAgentService;
 import voz.incomingbill.ai.service.agent.PdfAiAgentService;
+import voz.incomingbill.ai.service.agent.XmlAiAgentService;
 
 @RestController
 @Slf4j
@@ -16,6 +17,8 @@ public class ScanController {
     private JpegAiAgentService jpegAiAgentService;
     @Autowired
     private PdfAiAgentService pdfAiAgentService;
+    @Autowired
+    private XmlAiAgentService xmlAiAgentService;
 
 
     @GetMapping("process/jpg")
@@ -26,6 +29,11 @@ public class ScanController {
     @GetMapping("process/pdf")
     public String executeAiAgentForPdf() {
         return pdfAiAgentService.process();
+    }
+
+    @GetMapping("process/xml")
+    public String executeAiAgentForXml() {
+        return xmlAiAgentService.process();
     }
 
     @GetMapping("test")
